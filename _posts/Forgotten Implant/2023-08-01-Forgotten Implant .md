@@ -26,7 +26,6 @@ Hint is that this is an implant, so it should be calling us not listening.
 
 We run Wireshark and listen on our VPN at `tun0` and kill any leftover nmap sessions to limit the noise from the rest of the network. We see that the machine is trying to call us on port 81. It must know our IP due to the port scan we ran…
 
-![Untitled](Untitled.png)
 
 Let’s run a netcat listener to give it something to connect to:
 
