@@ -22,7 +22,7 @@ Nmap done: 1 IP address (1 host up) scanned in 1.72 seconds
 
 The only real hint for this box is that we're worknig with an implant from a C2 platform, so it likely should be calling us not listening.
 
-We run Wireshark and listen on our VPN at `tun0` and kill any leftover nmap sessions to limit the noise from the rest of the network. We see that the machine is trying to call us on port 81. It must know our IP due to the port scan earlier.
+We run Wireshark and listen on our VPN at `tun0` and kill any leftover nmap sessions to limit the noise from the rest of the network. We see that the machine is trying to call us on port 81. It must know our IP due to the port scan earlier. 
 
 ![](/assets/forgotten-implant/Untitled.png)
 
