@@ -8,7 +8,7 @@ tags: [ctf]     # TAG names should always be lowercase
 
 # Enumeration
 
-nmap shows all ports closed. even intensive scans
+nmap shows all ports closed. even intensive scans...
 
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
