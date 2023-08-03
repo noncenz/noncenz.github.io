@@ -282,7 +282,8 @@ drwx------ 2 fi   fi    4096 Jul 10  2022 .ssh
 -rw-r--r-- 1 fi   fi       0 Jul 10  2022 .sudo_as_admin_successful
 ```
 
-let’s check 
+### Rabbit Hole: Python Library Hijacking
+let’s check for
 
 ```bash
 ada@forgottenimplant:/home/fi$ python3 -c "import sys; print('\n'.join(sys.path))"
