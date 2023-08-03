@@ -1,4 +1,9 @@
-
+---
+title: Forgotten-Implant
+date: 2021-08-01 12:00:00
+categories: [TOP_CATEGORIE, SUB_CATEGORIE]
+tags: [tag]     # TAG names should always be lowercase
+---
 # Forgotten Implant
 
 # Enumeration
