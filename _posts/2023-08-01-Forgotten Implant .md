@@ -1,14 +1,12 @@
 ---
-title: Forgotten-Implant
+title: Forgotten Implant
 date: 2021-08-01 12:00:00
-categories: [TOP_CATEGORIE, SUB_CATEGORIE]
-tags: [tag]     # TAG names should always be lowercase
+categories: [CTF, TryHackMe]
+tags: [wireshark]     # TAG names should always be lowercase
 ---
-# Forgotten Implant
-
 # Enumeration
 
-nmap shows all ports closed. even intensive scans
+We start as usual with an nmap scan, but the result shows all ports closed. Even more lengthy / intensive scans give the same result.
 
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
@@ -22,13 +20,13 @@ Not shown: 1000 closed tcp ports (conn-refused)
 Nmap done: 1 IP address (1 host up) scanned in 1.72 seconds
 ```
 
-Hint is that this is an implant, so it should be calling us not listening.
+The only real hint for this box is that we're worknig with an implant from a C2 platform, so it likely should be calling us not listening.
 
-We run Wireshark and listen on our VPN at `tun0` and kill any leftover nmap sessions to limit the noise from the rest of the network. We see that the machine is trying to call us on port 81. It must know our IP due to the port scan we ran…
+We run Wireshark and listen on our VPN at `tun0` and kill any leftover nmap sessions to limit the noise from the rest of the network. We see that the machine is trying to call us on port 81. It must know our IP due to the port scan earlier.
 
 ![](/assets/forgotten-implant/Untitled.png)
 
-Let’s run a netcat listener to give it something to connect to:
+Let’s start a netcat listener to give it something to connect to:
 
 ```bash
 ──(user㉿kali-linux-2022-2)-[~]
@@ -44,13 +42,13 @@ Accept: */*
 Connection: keep-alive
 ```
 
-decode the b64
+We're receiving an HTTP GET call to a `heartbeat` endponit and a long filename that looks like base 64. Decoding it we find a ststus message. 
 
 ```json
 {"time": "2023-08-02T21:12:02.089477", "systeminfo": {"os": "Linux", "hostname": "forgottenimplant"}, "latest_jo_id": 0, "cmd": "whoami"}, "success": false}
 ```
 
-http. so we need a server
+Let's start an HTTP server so that we can respond to the GET. 
 
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
@@ -66,11 +64,11 @@ Serving HTTP on 0.0.0.0 port 81 (http://0.0.0.0:81/) ...
 10.10.115.84 - - [02/Aug/2023 17:17:03] "GET /get-job/ImxhdGVzdCI= HTTP/1.1" 404 -
 ```
 
-We see calls coming in for heartbeat and get-job. 
+Soon after starting the server we see calls coming in for the  `heartbeat` endponit as well as a new one to `get-job`. The filename at the end of the `get-job` endponit decodes to `"latest"`, suggesting we can provide new job instructions here. 
 
 # Foothold
 
-Host a file at `/get-job/ImxhdGVzdCI=` to send jobs. 
+To begin interacting with the endponit, we'll host a file at `/get-job/ImxhdGVzdCI=` for the implant to pull. 
 
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
