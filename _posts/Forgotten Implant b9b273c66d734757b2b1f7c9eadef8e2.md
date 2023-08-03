@@ -1,8 +1,8 @@
 ---
 title: Forgitten imopkant
-date: YYYY-MM-DD HH:MM:SS +/-TTTT
+date: 2023-08-01 12:00:00
 categories: [TOP_CATEGORIE, SUB_CATEGORIE]
-tags: [TAG]     # TAG names should always be lowercase
+tags: [ctf]     # TAG names should always be lowercase
 ---
 # Forgotten Implant
 
