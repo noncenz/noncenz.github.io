@@ -135,6 +135,8 @@ Some of the more popular shells don’t seem to work on this box but eventually 
 
 ## Local Enumeration
 
+### ada's home
+
 There is a Python script in our home directory. 
 
 ```python
@@ -161,7 +163,7 @@ We also have a hidden directory `.implant` off of ada's home, containing the mal
 <details>
 <summary>.implant.py</summary>
 
-```python
+{% highlight python %}
 import base64
 import binascii
 import json
@@ -280,8 +282,10 @@ if __name__ == "__main__":
             commander.get_job()
             commander.save_log()
 
-```
+{% end highlight %}
 </details>
+
+### fi's home
 
 Enumerating fi’s home directory we can see that he has `sudo` permissions. This looks like a good account to transition to if we can find a path. 
 
