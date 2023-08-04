@@ -4,7 +4,8 @@ date: 2021-08-01 12:00:00
 categories: [CTF, TryHackMe]
 tags: [wireshark]     # TAG names should always be lowercase
 ---
-# Forgotten Implant
+![](https://tryhackme-images.s3.amazonaws.com/room-icons/1968fc18c7598f797954065d05a7f8f0.png)
+
 ## Enumeration
 
 We start as usual with an nmap scan, but the result shows all ports closed. Even more lengthy / intensive scans give the same result.
