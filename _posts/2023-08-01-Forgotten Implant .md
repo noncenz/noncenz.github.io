@@ -292,7 +292,7 @@ drwx------ 2 fi   fi    4096 Jul 10  2022 .ssh
 
 ### 🐰 Rabbit Hole: Python Library Hijacking
 
-There is a python file in fi's home named `sniffer.py`. This is the code that detected our `nmap` scan and started the implant callnig out to us. It would require elevated permissions to run the networknig code, and seeing it's log owned and wrtten to by root is a good indication that this would be a nice attack vector. Alas, it seems to be well secured from Python library hijacking and we aren't privy to the script launching it. 
+There is a python file in fi's home named `sniffer.py`. This is the code that detected our `nmap` scan and started the implant callnig out to us. It would require elevated permissions to run the networknig code, and seeing it's log owned and wrtten to by root is a good indication that this would be a nice attack vector. Alas, it seems to be well secured from Python library hijacking and we aren't privy to the job launching it. 
 
 
 
@@ -300,15 +300,17 @@ There is a python file in fi's home named `sniffer.py`. This is the code that de
 
 ## Become www-data
 
-We seem to have run out of likely paths to become fi, let’s look for another path.
+We seem to have run out of likely paths to become fi, let’s look for another option. 
+
+Running `curl 127.0.0.1` we see phpMyAdmin on port 80. 
 
 ### Intended Path
 
 ### Alternate Path
 
-In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easy way in when we already have a shell.
+In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easier way in considering we already have a shell.
 
-Running `curl 127.0.0.1` we see phpMyAdmin on port 80. Enumerating `/var/www/phpmyadmin` we see we can write to the `tmp` folder.
+Enumerating `/var/www/phpmyadmin` we see we can write to the `tmp` folder.
 
 ```bash
 cd phpmyadmin/
