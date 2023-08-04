@@ -368,7 +368,7 @@ We seem to have run out of likely paths to become fi, let’s look for another p
 
 ### Alternate Path
 
-In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easy way in.
+In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easy way in when we already have a shell.
 
 Running `curl 127.0.0.1` indicates that we are serving phpMyAdmin on port 80, and enumerating that directory locally we see we can write to the `tmp` folder.
 
