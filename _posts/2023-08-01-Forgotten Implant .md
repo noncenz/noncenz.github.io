@@ -5,7 +5,13 @@ categories: [CTF, TryHackMe]
 tags: [wireshark]     # TAG names should always be lowercase
 ---
 
+
+
 ![](https://tryhackme-images.s3.amazonaws.com/room-icons/1968fc18c7598f797954065d05a7f8f0.png)
+
+## Overview
+
+An interesting and unique challenge created by [Ingo](https://tryhackme.com/p/Ingo) for the TryHackMe platform. 
 
 ## Enumeration
 
@@ -24,7 +30,7 @@ Not shown: 1000 closed tcp ports (conn-refused)
 Nmap done: 1 IP address (1 host up) scanned in 1.72 seconds
 ```
 
-We were offered a hint for this box that we're worknig with an implant from a C2 platform. Those implants tend to beacon out rather than listen, so let's look for a beacon.
+We were offered a hint for this box that we're working with an implant from a C2 platform. Those implants tend to beacon out rather than listen, so let's look for a beacon.
 
 We run Wireshark and listen on our VPN at `tun0`, killing any leftover nmap sessions to limit the noise from the rest of the network. We see that the machine is trying to call us on port 81. It must know our IP due to the port scan earlier. 
 
@@ -125,7 +131,7 @@ We receive:
 {"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}
 ```
 
-*We've achieved RCE and found the first flag already, let's grab it right now!*
+We've achieved RCE and found the first flag already, *let's grab it right now!*
 
 Send:
 
@@ -171,7 +177,7 @@ for product in cursor.fetchall():
     print(f'We have {product[2]}x {product[1]}')
 ```
 
-We enumerate the database locally using the credentuals here but find nothing interesting. The credentials also don't work to `sudo` or `su` to any of our other users. 
+We enumerate the database locally using the credentials here but find nothing interesting. The credentials also don't work to `sudo` or `su` to any of our other users. 
 
 We also have a hidden directory `.implant` off of ada's home, containing the malware that we're connecting through. An interesting read, but we're already in ada's account so nothing to exploit here.  
 
@@ -334,7 +340,9 @@ There is a python file in fi's home named `sniffer.py`. This is the code that de
 
 ## Become www-data
 
-We seem to have run out of likely paths to become fi, let’s look for another option. 
+After running enumeration scripts and examining the other files in this home directory, we seem to have run out of likely paths to become fi. 
+
+Let’s look for another option. The only other user we see in `/etc/passwd` is www-user, so that will be the new target.
 
 Running `curl 127.0.0.1` we see phpMyAdmin version 4.8.1 on port 80. 
 
@@ -371,7 +379,7 @@ The exploit seems to work. We can upload or create a file with our reverse shell
 
 ### Alternate Path
 
-In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easier way in considering we already have a shell.
+In most challenges we’re trying to elevate *out* of the www-data account, lets look for an easier way *in* considering we already have a shell.
 
 Enumerating `/var/www/phpmyadmin` we see we can write to the `tmp` folder:
 
@@ -403,7 +411,7 @@ ada@forgottenimplant:/var/www/phpmyadmin$
 
 If we can access this through the web server we'll be able to run code as www-data. 
 
-Lets create a file and try to call it through `curl` as a quick test to prove that the folder is accessable:
+Lets create a file and try to call it through `curl` as a quick test to prove that the folder is accessible:
 
 ```bash
 ada@forgottenimplant:/var/www/phpmyadmin$ echo "hello" > tmp/hi.html
@@ -435,7 +443,7 @@ With the above we receive a connection back to our new listener as www-data.
 
 ## Become root
 
-A quick enumeration proves that our migration to www-data was worthwile, this account has full `sudo` permissions with no password needed. 
+A quick enumeration proves that our migration to www-data was worthwhile, this account has full `sudo` permissions with no password needed. 
 
 ```bash
 $ sudo -l
