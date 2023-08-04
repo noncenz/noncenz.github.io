@@ -46,15 +46,26 @@ Accept: */*
 Connection: keep-alive
 ```
 
-We're receiving an HTTP GET call to a `heartbeat` endponit and a long filename that looks like base 64. Decoding it we find a ststus message. 
+We're receiving an HTTP GET call to a `heartbeat` endponit and a long filename that looks like base 64. Decoding it we find a status message as below. 
 
 ```json
-{"time": "2023-08-02T21:12:02.089477", "systeminfo": {"os": "Linux", "hostname": "forgottenimplant"}, "latest_jo_id": 0, "cmd": "whoami"}, "success": false}
+{
+  "time": "2023-08-02T21:12:02.089477",
+  "systeminfo": {
+    "os": "Linux",
+    "hostname": "forgottenimplant"
+  },
+  "latest_job": {
+    "job_id": 0,
+    "cmd": "whoami"
+  },
+  "success": false
+}
 ```
 
 Let's start an HTTP server so that we can respond to the GET. 
 
-```bash
+<span style="background-color: #FFFF00">
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ python -m http.server 81
 Serving HTTP on 0.0.0.0 port 81 (http://0.0.0.0:81/) ...
@@ -66,7 +77,7 @@ Serving HTTP on 0.0.0.0 port 81 (http://0.0.0.0:81/) ...
 10.10.115.84 - - [02/Aug/2023 17:17:01] "GET /heartbeat/eyJ0aW1lIjogIjIwMjMtMDgtMDJUMjE6MTc6MDEuNjUwODk3IiwgInN5c3RlbWluZm8iOiB7Im9zIjogIkxpbnV4IiwgImhvc3RuYW1lIjogImZvcmdvdHRlbmltcGxhbnQifSwgImxhdGVzdF9qb2IiOiB7ImpvYl9pZCI6IDAsICJjbWQiOiAid2hvYW1pIn0sICJzdWNjZXNzIjogZmFsc2V9 HTTP/1.1" 404 -                                            
 10.10.115.84 - - [02/Aug/2023 17:17:03] code 404, message File not found                                        
 10.10.115.84 - - [02/Aug/2023 17:17:03] "GET /get-job/ImxhdGVzdCI= HTTP/1.1" 404 -
-```
+</span>
 
 Soon after starting the server we see calls coming in for the  `heartbeat` endponit as well as a new one to `get-job`. The filename at the end of the `get-job` endponit decodes to `"latest"`, suggesting we can provide new job instructions here. 
 
