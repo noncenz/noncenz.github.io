@@ -4,14 +4,14 @@ date: 2021-08-01 12:00:00
 categories: [CTF, TryHackMe]
 tags: [wireshark]     # TAG names should always be lowercase
 ---
-
+# h1
 ![](https://tryhackme-images.s3.amazonaws.com/room-icons/1968fc18c7598f797954065d05a7f8f0.png)
 
 ## Enumeration
 
 We start this adventure as usual with an nmap scan, but the result shows all ports closed. Even more lengthy / intensive scans give the same result.
 
-
+# h1 no2
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ nmap 10.10.115.84
@@ -329,10 +329,7 @@ drwx------ 2 fi   fi    4096 Jul 10  2022 .ssh
 
 #### 🐰 Rabbit Hole: Python Library Hijacking
 
-There is a python file in fi's home named `sniffer.py`. This is the code that detected our `nmap` scan and started the implant callnig out to us. It would require elevated permissions to run the networknig code, and seeing it's log owned and wrtten to by root is a good indication that this would be a nice attack vector. Alas, it seems to be well secured from Python library hijacking and we aren't privy to the job launching it. 
-
-
-
+There is a python file in fi's home named `sniffer.py`. This is the code that detected our `nmap` scan and started the implant callnig out to us. It would require elevated permissions to run the networknig libraries, and seeing it's log owned and wrtten to by root is a good indication that this would be a nice attack vector. Alas, it seems to be well secured from Python library hijacking and we aren't privy to the job launching it. 
 
 
 ## Become www-data
