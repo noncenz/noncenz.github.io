@@ -260,7 +260,7 @@ if __name__ == "__main__":
 
 ```
 
-Enumerating fi’s home directory we can see that he has `sudo` permissions. This looks like a good account to transition to if we can find a path.  
+Enumerating fi’s home directory we can see that he has `sudo` permissions. This looks like a good account to transition to if we can find a path. 
 
 ```bash
 ada@forgottenimplant:/home/fi$ ls -la
@@ -283,6 +283,7 @@ lrwxrwxrwx 1 fi   fi       9 Jul 10  2022 .python_history -> /dev/null
 drwx------ 2 fi   fi    4096 Jul 10  2022 .ssh
 -rw-r--r-- 1 fi   fi       0 Jul 10  2022 .sudo_as_admin_successful
 ```
+
 
 ### 🐰 Rabbit Hole: Python Library Hijacking
 
@@ -370,7 +371,7 @@ We seem to have run out of likely paths to become fi, let’s look for another p
 
 In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easy way in when we already have a shell.
 
-Running `curl 127.0.0.1` indicates that we are serving phpMyAdmin on port 80, and enumerating that directory locally we see we can write to the `tmp` folder.
+Running `curl 127.0.0.1` we see phpMyAdmin on port 80. Enumerating `/var/www/phpmyadmin` we see we can write to the `tmp` folder.
 
 ```bash
 cd phpmyadmin/
