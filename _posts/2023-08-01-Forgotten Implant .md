@@ -7,8 +7,6 @@ tags: [wireshark]     # TAG names should always be lowercase
 
 ![](https://tryhackme-images.s3.amazonaws.com/room-icons/1968fc18c7598f797954065d05a7f8f0.png)
 
-# H1
-m
 ## Enumeration
 
 
