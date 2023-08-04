@@ -91,7 +91,7 @@ Soon after starting the server we see calls coming in for the  `heartbeat` endpo
 
 To begin interacting with the box, we'll host a file at `/get-job/ImxhdGVzdCI=` for the implant to pull. We'll seed it with a `ls` command to start.
 
-```console
+```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ mkdir get-job
 
