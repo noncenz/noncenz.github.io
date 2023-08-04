@@ -4,14 +4,14 @@ date: 2021-08-01 12:00:00
 categories: [CTF, TryHackMe]
 tags: [wireshark]     # TAG names should always be lowercase
 ---
-# h1
+
 ![](https://tryhackme-images.s3.amazonaws.com/room-icons/1968fc18c7598f797954065d05a7f8f0.png)
 
 ## Enumeration
 
 We start this adventure as usual with an nmap scan, but the result shows all ports closed. Even more lengthy / intensive scans give the same result.
 
-# h1 no2
+
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ nmap 10.10.115.84
