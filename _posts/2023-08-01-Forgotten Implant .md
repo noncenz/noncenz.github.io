@@ -312,7 +312,7 @@ drwx------ 2 fi   fi    4096 Jul 10  2022 .ssh
 ```
 
 
-### 🐰 Rabbit Hole: Python Library Hijacking
+#### 🐰 Rabbit Hole: Python Library Hijacking
 
 There is a python file in fi's home named `sniffer.py`. This is the code that detected our `nmap` scan and started the implant callnig out to us. It would require elevated permissions to run the networknig code, and seeing it's log owned and wrtten to by root is a good indication that this would be a nice attack vector. Alas, it seems to be well secured from Python library hijacking and we aren't privy to the job launching it. 
 
