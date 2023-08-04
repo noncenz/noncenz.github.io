@@ -113,7 +113,9 @@ The implant reads this and returns:
 {"success": false, "result": "JSON error"}
 ```
 
-Now it wants JSON. At least we're moving forward! Let’s try the JSON format we received in the heartbeat message. We submit:
+Now it wants JSON. At least we're moving forward! Let’s try the JSON format we received in the heartbeat message. 
+
+We submit:
 
 `echo '{"job_id": 0, "cmd": "ls"}' | base64 > get-job/ImxhdGVzdCI=`
 
@@ -132,7 +134,7 @@ Send:
 Receive:
 
 ```json
-{"job_id": 0, "cmd": "cat user.txt", "success": true, "result": "THM{[redacted]}\n"}`
+{"job_id": 0, "cmd": "cat user.txt", "success": true, "result": "THM{[redacted]}\n"}
 ```
 
 ## Initial Shell
