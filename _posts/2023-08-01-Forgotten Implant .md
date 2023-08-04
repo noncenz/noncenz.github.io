@@ -18,7 +18,7 @@ An interesting and unique challenge created by [Ingo](https://tryhackme.com/p/In
 We start this adventure as usual with an nmap scan, but the result shows all ports closed. Even more lengthy / intensive scans give the same result.
 
 
-```bash
+```console
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ nmap 10.10.115.84
 Starting Nmap 7.94 ( https://nmap.org ) at 2023-08-02 17:08 EDT
