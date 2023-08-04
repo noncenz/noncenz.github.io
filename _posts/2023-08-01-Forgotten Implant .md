@@ -98,7 +98,7 @@ returns
 
 `{"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}`
 
-Oh, we've found the first flag already, let's grab it right now!
+We've found the first flag already, let's grab it right now!
 
 `echo '{"job_id": 0, "cmd": "cat user.txt"}' | base64 > get-job/ImxhdGVzdCI=`
 
