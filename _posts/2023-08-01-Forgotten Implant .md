@@ -4,7 +4,7 @@ date: 2021-08-01 12:00:00
 categories: [CTF, TryHackMe]
 tags: [wireshark]     # TAG names should always be lowercase
 ---
-# Enumeration
+## Enumeration
 
 We start as usual with an nmap scan, but the result shows all ports closed. Even more lengthy / intensive scans give the same result.
 
@@ -358,7 +358,7 @@ if __name__ == "__main__":
 
 We seem to have run out of likely paths to become fi, let’s look for another path.
 
-# Become www-data
+## Become www-data
 
 In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easy way in.
 
@@ -422,7 +422,7 @@ ada@forgottenimplant:/var/www/phpmyadmin/tmp$ curl 127.0.0.1/tmp/shell.php
 
 With the above we receive a connection back in our new shell as www-data
 
-# Become root
+## Become root
 
 ```bash
 $ sudo -l
