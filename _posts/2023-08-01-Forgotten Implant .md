@@ -283,10 +283,9 @@ lrwxrwxrwx 1 fi   fi       9 Jul 10  2022 .python_history -> /dev/null
 drwx------ 2 fi   fi    4096 Jul 10  2022 .ssh
 -rw-r--r-- 1 fi   fi       0 Jul 10  2022 .sudo_as_admin_successful
 ```
-
-### 🐰 Rabbit Hole: Python Library Hijacking
-<details> 
-<summary>Expand for details</summary>
+<aside>
+🐰 Rabbit Hole: Python Library Hijacking
+</aside>
 
 
 ```bash
@@ -360,7 +359,7 @@ if __name__ == "__main__":
     sniff(prn=packets_hosts.tcp_monitor_callback, filter="tcp and inbound and not port 22", store=0)
 ```
 
-</details>
+
 
 We seem to have run out of likely paths to become fi, let’s look for another path.
 
