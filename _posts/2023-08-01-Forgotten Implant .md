@@ -282,7 +282,7 @@ if __name__ == "__main__":
             commander.get_job()
             commander.save_log()
 
-{% end highlight %}
+{% endhighlight %}
 </details>
 
 ### fi's home
