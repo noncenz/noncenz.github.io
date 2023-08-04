@@ -367,7 +367,7 @@ uid=33(www-data) gid=33(www-data) groups=33(www-data)
 
 ```
 
-The exploit seems to work. We can upload or `cat` our reverse shell of choice and call it with this script to obtain a new shell as www-data.
+The exploit seems to work. We can upload or create a file with our reverse shell of choice and call it with this script to obtain a new shell as www-data.
 
 ### Alternate Path
 
