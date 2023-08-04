@@ -106,7 +106,7 @@ We've found the first flag already, let's grab it right now!
 
 `{"job_id": 0, "cmd": "cat user.txt", "success": true, "result": "THM{[redacted]}\n"}`
 
-# Initial Shell
+## Initial Shell
 
 Some of the more popular shells don’t seem to work on this box but eventually we find one that does.  
 
@@ -363,6 +363,10 @@ if __name__ == "__main__":
 We seem to have run out of likely paths to become fi, let’s look for another path.
 
 ## Become www-data
+
+### Intended Path
+
+### Alternate Path
 
 In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easy way in.
 
