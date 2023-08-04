@@ -68,7 +68,7 @@ Serving HTTP on 0.0.0.0 port 81 (http://0.0.0.0:81/) ...
 
 Soon after starting the server we see calls coming in for the  `heartbeat` endponit as well as a new one to `get-job`. The filename at the end of the `get-job` endponit decodes to `"latest"`, suggesting we can provide new job instructions here. 
 
-# Foothold
+## Foothold
 
 To begin interacting with the endponit, we'll host a file at `/get-job/ImxhdGVzdCI=` for the implant to pull. 
 
