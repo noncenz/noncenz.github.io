@@ -1,5 +1,5 @@
 ---
-title: [Forgotten Implant](https://tryhackme.com/room/forgottenimplant)
+title: Forgotten Implant
 date: 2021-08-01 12:00:00
 categories: [CTF, TryHackMe]
 tags: [wireshark]     # TAG names should always be lowercase
@@ -7,7 +7,8 @@ tags: [wireshark]     # TAG names should always be lowercase
 
 ![](https://tryhackme-images.s3.amazonaws.com/room-icons/1968fc18c7598f797954065d05a7f8f0.png)
 
-An interesting and unique challenge created by [Ingo](https://tryhackme.com/p/Ingo) for the [TryHackMe](https://tryhackme.com) platform. 
+[Forgotten Implant](https://tryhackme.com/room/forgottenimplant) is an interesting and unique challenge created by [Ingo](https://tryhackme.com/p/Ingo) for the [TryHackMe](https://tryhackme.com) platform. 
+
 
 ## Enumeration
 
