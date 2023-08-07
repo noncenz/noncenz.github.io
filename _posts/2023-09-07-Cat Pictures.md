@@ -147,7 +147,7 @@ Scanning a bit we quickly find the string table near the beginning of the binary
 
 Executing `runme` with the proper password drops an ssh key in home folder.
 
-```bash
+```
 # ./runme
 Please enter yout password: [redacted]
 Welcome, catlover! SSH key transfer queued!
@@ -163,7 +163,7 @@ And we can SSH into the box with `ssh -i id_rsa [catlover@10.10.94.199](mailto:c
 
 We find ourselves in a Docker container. We’ve achieved root access, but only retrieved the first flag. Clearly the second flag is on the Docker host machine. 
 
-🐰 **Rabbit Hole:** Enumerate MariaDB
+#### 🐰 Rabbit Hole: Enumerate MariaDB
 
 We find database credentials for MariaDB in the phpBB configuration file. We should enumerate while we’re here. 
 
