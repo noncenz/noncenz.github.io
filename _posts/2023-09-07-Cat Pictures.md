@@ -3,8 +3,9 @@ title: Cat Pictures
 date: 2021-09-07 12:00:00
 categories: [CTF, TryHackMe]
 tags: [docker,port-knocking]     # TAG names should always be lowercase
+image: 
+    path: /assets/cat-pictures/cropcat.jpeg
 ---
-![](https://tryhackme-images.s3.amazonaws.com/room-icons/0d75a543c66201b4aa996172b6043eb5.jpeg)
 Link to room: [Cat Pictures](https://tryhackme.com/room/catpictures) 
 
 ## Enumeration
