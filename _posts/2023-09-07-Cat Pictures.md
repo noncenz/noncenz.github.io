@@ -11,7 +11,7 @@ Link to room: [Cat Pictures](https://tryhackme.com/room/catpictures)
 
 Our initial run of `nmap` gives us a small attack surface:
 
-```bash 
+```console 
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ nmap -sC -sV 10.10.94.199
 Starting Nmap 7.94 ( https://nmap.org ) at 2023-08-06 20:08 EDT
@@ -49,7 +49,7 @@ We `apt install knockd` to get the `knock` client and call it with the “magic 
 
 Running `nmap` again after knocknig we find an ftp site that allows anonymous login:
 
-```
+```console
 └─$ nmap -sC -sV 10.10.94.199                                                                           
 Starting Nmap 7.94 ( https://nmap.org ) at 2023-08-06 20:18 EDT
 Nmap scan report for 10.10.94.199
@@ -87,48 +87,44 @@ Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 
 Logging in to the ftp site as anonymous yields one file, `note.txt` with a clue about how to move forward. 
 
-```bash
+```console
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ cat note.txt
 In case I forget my password, I'm leaving a pointer to the internal shell service on the server.
 
-Connect to port 4420, the password is sardinethecat.
+Connect to port 4420, the password is [redacted].
 - catlover
 ```
 
 If we try to `ssh` to port 4420 it won’t connect, so we’ll use netcat to make a plain TCP connection. With the credentials supplied above we land in a heavily restricted shell.
 
-```
+```console
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ nc 10.10.94.199 4420
 INTERNAL SHELL SERVICE
 please note: cd commands do not work at the moment, the developers are fixing it at the moment.
 do not use ctrl-c
-Please enter password:
-runme
-THIS EXECUTABLE DOES NOT WORK UNDER THE INTERNAL SHELL, YOU NEED A REGULAR SHELL.
-
-cat runme
-THIS EXECUTABLE DOES NOT WORK UNDER THE INTERNAL SHELL, YOU NEED A REGULAR SHELL.
+Please enter password: [redacted]
 Password accepted
-
 ```
+
 
 ## Escalation #1
 
 Enumerating a bit we find there is almost nothing to look at, except for one file `runme` in our catlover’s directory. We have permissions to files in this directory so we assume that our account is catlover. 
 
-```
+```bash
 ls -la /home/catlover
 total 28
 drwxr-xr-x 2 0 0  4096 Apr  3  2021 .
 drwxr-xr-x 3 0 0  4096 Apr  2  2021 ..
 -rwxr-xr-x 1 0 0 18856 Apr  3  2021 runme
 ```
+{: .nolineno }
 
 We can’t run or even examine this file with our current shell……..
 
-```
+```console
 runme
 THIS EXECUTABLE DOES NOT WORK UNDER THE INTERNAL SHELL, YOU NEED A REGULAR SHELL.
 
@@ -147,7 +143,7 @@ Scanning a bit we quickly find the string table near the beginning of the binary
 
 Executing `runme` with the proper password drops an ssh key in home folder.
 
-```
+```console
 # ./runme
 Please enter yout password: [redacted]
 Welcome, catlover! SSH key transfer queued!
@@ -175,7 +171,7 @@ Searching through the DB we find the schema for the forum and a test schema. We 
 
 We have a script `clean.sh` in `/opt/clean` . Using `mount` we determine that this folder is mounted from the host OS.
 
-```
+```console
 (remote) root@7546fa2336d6:/opt/clean# mount
 [...]
 /dev/xvda1 on /bitnami/phpbb type ext4 (rw,relatime,errors=remount-ro,data=ordered)
@@ -198,6 +194,7 @@ Turning our attention back to `clean.sh` we note that it simply empties the `/tm
 
 rm -rf /tmp/*
 ```
+{: .nolineno }
 
 Adding a file to our local `/tmp` directory and waiting just a few minutes (this is a CTF after all…) we see that the `clean.sh` script isn’t executing against our filesystem in the container. If it’s being called on the host side, this would be a path to escape the container. 
 
