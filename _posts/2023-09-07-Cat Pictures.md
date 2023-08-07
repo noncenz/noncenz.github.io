@@ -11,7 +11,7 @@ Link to room: [Cat Pictures](https://tryhackme.com/room/catpictures)
 
 Our initial run of `nmap` gives us a small attack surface:
 
-```bash
+```bash 
 ┌──(user㉿kali-linux-2022-2)-[~]
 └─$ nmap -sC -sV 10.10.94.199
 Starting Nmap 7.94 ( https://nmap.org ) at 2023-08-06 20:08 EDT
