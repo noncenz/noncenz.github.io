@@ -12,7 +12,6 @@ image:
 
 ## Enumeration
 
-
 We start this adventure as usual with an nmap scan, but the result shows all ports closed. Even more lengthy / intensive scans give the same result.
 
 
