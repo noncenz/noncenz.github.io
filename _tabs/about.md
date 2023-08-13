@@ -12,6 +12,8 @@ I've been playing with HackTheBox and TryHackMe off and on form several years, a
 
 Most write-ups I've seen take you through the exact steps you need to solve a box. With mine I try to include my thinking as I progress through the box as well as some of the mistakes I make. I also like to include potentially valid paths that don't turn out to be the solution (rabbit holes).
 
+Feel free to DM me on Discord or email using the button below if you have any feedback to offer.
+
 I hope you enjoy what you read and maybe learn something new!
 
 noncenz
