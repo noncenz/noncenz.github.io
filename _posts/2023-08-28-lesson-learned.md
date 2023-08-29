@@ -85,7 +85,7 @@ We can use a username we found in the BF attack back in ZAP, and then run a ZAP 
 
 ### 🎂 Zap the right way
 
-We can turn down the policy level for SQL Injection in ZAP to Low and run a scan on the POST message with a valid user. This way we will still detect the SQLi without using `OR` and breaking the box:
+We can turn down the policy level for SQL Injection in ZAP to Low and run a scan on the POST message with a valid user. This way we will still detect the SQLi without using `OR` and breaking the box. Note that I also turned off scanning for all of the other database types under the "Technology" tab:
 
 ![Screenshot 2023-08-28 at 9.14.11 AM.png](/assets/lesson-learned/Screenshot_2023-08-28_at_9.14.11_AM.png){: .sideby .normal }
 ![Screenshot 2023-08-28 at 9.01.02 AM.png](/assets/lesson-learned/Screenshot_2023-08-28_at_9.01.02_AM.png){: .sideby .normal }
