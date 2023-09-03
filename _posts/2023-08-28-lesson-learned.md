@@ -93,6 +93,8 @@ We can turn down the policy level for SQL Injection in ZAP to Low and run a scan
 #### 🏁 From here, we can proceed to use the patterns above to get the flag.
 
 ## Technique #3: SQLMap
+>A short time after this write-up, this box was patched to block the SQL injection path. You can still follow the steps here to dump the database, but be advised that the credentials you get back won't get you to the flag.
+{: .prompt-info } 
 
 With some patience, we can run SQLMap to dump the user table in the database for usernames and passwords. Technically this would not be *bypassing the login*, but a flag is a flag, eh?
 
